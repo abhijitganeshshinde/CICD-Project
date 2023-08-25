@@ -1,0 +1,19 @@
+{
+        "Nginx_Config_File_Location": "/etc/nginx/sites-available",
+        "Nginx_Config_File": "default",
+        "DeploymentDetails": [
+            {
+                "Repository_Name": "",
+                "Deploy": [
+                    {
+                        "Env": "",
+                        "Target_Branch": "",
+                        "Location": "",
+                        "FolderName": "",
+                        "Url": "",
+                        "MainFile": ""
+                    }
+                ]
+            }
+        ]
+    }
