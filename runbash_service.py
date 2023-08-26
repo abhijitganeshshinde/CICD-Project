@@ -56,8 +56,8 @@ def run_command(command):
     else:
         print(result.stdout.decode('utf-8'))
 
-def restart_all_service(app_name):
-    run_command("systemctl daemon-reload")
-    run_command(f"systemctl start {app_name}")
-    run_command(f"systemctl enable {app_name}")
+def restart_all_service(service_name):
+    run_command("sudo -u cicd systemctl daemon-reload")
+    run_command(f"sudo -u cicd systemctl start {service_name}")
+    run_command(f"sudo -u cicd systemctl enable {service_name}")
     restart_nginx()

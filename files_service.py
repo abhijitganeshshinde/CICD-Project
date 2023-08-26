@@ -470,11 +470,11 @@ def nginx_config_exists(app_name):
 def deploy_flask_app(app_name,env,project_path,current_path):
     try:
         os.chdir(project_path)
-        os.system(f"python3 -m venv {env}_{app_name}_venv")
+        os.system(f"sudo -u cicd python3 -m venv {env}_{app_name}_venv")
         #os.system(f"source {env}_{app_name}_venv/bin/activate")
-        os.system(f"{env}_{app_name}_venv/bin/pip install -r requirements.txt")
-        os.system(f"{env}_{app_name}_venv/bin/pip install wheel")
-        os.system(f"{env}_{app_name}_venv/bin/pip install flask gunicorn")
+        os.system(f"sudo -u cicd {env}_{app_name}_venv/bin/pip install -r requirements.txt")
+        os.system(f"sudo -u cicd {env}_{app_name}_venv/bin/pip install wheel")
+        os.system(f"sudo -u cicd {env}_{app_name}_venv/bin/pip install flask gunicorn")
         is_readable,wsgi_code = read_nginx_config(os.path.join(current_path,"wsgi_code_sample.txt"))
         wsgi_code = wsgi_code.replace("@mainfile",app_name)
         with open("wsgi.py", "w") as wsgi_file:
@@ -504,9 +504,9 @@ def add_gunicorn_service(env,app_name,gunicorn_service):
         os.system(f"mv {tmp_service_file_path} {service_file_path}")
         # with open(f"/etc/systemd/system/{app_name}.service", "w") as service_file:
         #     service_file.write(gunicorn_service)
-        runbash_service.run_command("systemctl daemon-reload")
-        runbash_service.run_command(f"systemctl start {env}_{app_name}")
-        runbash_service.run_command(f"systemctl enable {env}_{app_name}")
+        runbash_service.run_command("sudo -u cicd systemctl daemon-reload")
+        runbash_service.run_command(f"sudo -u cicd systemctl start {env}_{app_name}")
+        runbash_service.run_command(f"sudo -u cicd systemctl enable {env}_{app_name}")
         return True  
     except OSError as os_error:
         print("Operating System Error:", os_error)
@@ -527,11 +527,11 @@ def add_nginx_config(service_name,app_name,nginx_config):
         os.system(f"mv {tmp_nginx_config_file_path} {nginx_config_file_path}")
 
             # Step 9: Create a symbolic link and test configuration
-        runbash_service.run_command(f"ln -s /etc/nginx/sites-available/{service_name} /etc/nginx/sites-enabled")
-        runbash_service.run_command("nginx -t")
+        runbash_service.run_command(f"sudo -u cicd ln -s /etc/nginx/sites-available/{service_name} /etc/nginx/sites-enabled")
+        runbash_service.run_command("sudo -u cicd nginx -t")
 
             # Step 10: Restart Nginx
-        runbash_service.run_command("systemctl restart nginx")
+        runbash_service.run_command("sudo -u cicd systemctl restart nginx")
         return True
     except OSError as os_error:
         print("Operating System Error:", os_error)
