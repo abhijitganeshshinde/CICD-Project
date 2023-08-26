@@ -204,7 +204,7 @@ if [ ! -d "$destination_folder" ]; then
     echo "Repository cloned."
 else
     echo "Repository folder already exists. Updating..."
-    sudo git -C "$destination_folder" pull origin dev
+    sudo git -C "$destination_folder" pull
     echo "Repository updated."
 fi
 
@@ -361,12 +361,12 @@ else
 fi
 
 
-sudo chmod 777 /var/www
-sudo chmod 777 /Project
-sudo chmod 777 /etc/nginx/sites-available/default
-sudo chmod 777 /etc/hosts
-sudo chmod +x "$destination_folder/checknewcommit.py"
-sudo chmod +x "$destination_folder/run_pythonprogram.sh"
+sudo -u cicd chmod 777 /var/www
+sudo -u cicd chmod 777 /Project
+sudo -u cicd chmod 777 /etc/nginx/sites-available/default
+sudo -u cicd chmod 777 /etc/hosts
+sudo -u cicd chmod +x "$destination_folder/checknewcommit.py"
+sudo -u cicd chmod +x "$destination_folder/run_pythonprogram.sh"
 
 bash_script_path="$project_dir/CICD-Project/run_pythonprogram.sh"
 cron_expression="*/1 * * * *"
@@ -384,8 +384,8 @@ add_cron_job() {
 
 add_cron_job
 
-sudo systemctl restart nginx
-sudo systemctl restart cron
+sudo -u cicd systemctl restart nginx
+sudo -u cicd systemctl restart cron
 
 echo "Nginx and cron service restarted."
 
