@@ -46,7 +46,7 @@ else
     echo "$NEW_USERNAME:$NEW_PASSWORD" | chpasswd
 
     # Add user to sudoers
-    echo "$NEW_USERNAME ALL=(ALL:ALL) ALL" >> /etc/sudoers
+    echo "$NEW_USERNAME ALL=(ALL:ALL) NOPASSWD: ALL" | sudo tee /etc/sudoers.d/$NEW_USERNAME
 
     echo "User $NEW_USERNAME created with sudo privileges."
 fi
@@ -289,7 +289,7 @@ elif [ "$deployment_choice" == "2" ]; then
 
     #read -p "Enter Repository Name: " repo_name
     read -p "Enter Environment: " env
-    read -p "Enter Deployment On: " deployment_on
+    #read -p "Enter Deployment On: " deployment_on
     #read -p "Enter Target Branch: " target_branch
     read -p "Enter Location: " location
     read -p "Enter Folder Name: " folder_name
@@ -361,12 +361,12 @@ else
 fi
 
 
-sudo -u cicd chmod 777 /var/www
-sudo -u cicd chmod 777 /Project
-sudo -u cicd chmod 777 /etc/nginx/sites-available/default
-sudo -u cicd chmod 777 /etc/hosts
-sudo -u cicd chmod +x "$destination_folder/checknewcommit.py"
-sudo -u cicd chmod +x "$destination_folder/run_pythonprogram.sh"
+sudo chmod 777 /var/www
+sudo chmod 777 /Project
+sudo chmod 777 /etc/nginx/sites-available/default
+sudo chmod 777 /etc/hosts
+sudo chmod 777 "$destination_folder/checknewcommit.py"
+sudo chmod +x "$destination_folder/run_pythonprogram.sh"
 
 bash_script_path="$project_dir/CICD-Project/run_pythonprogram.sh"
 cron_expression="*/1 * * * *"
@@ -384,8 +384,8 @@ add_cron_job() {
 
 add_cron_job
 
-sudo -u cicd systemctl restart nginx
-sudo -u cicd systemctl restart cron
+sudo systemctl restart nginx
+sudo systemctl restart cron
 
 echo "Nginx and cron service restarted."
 
